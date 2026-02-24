@@ -1,0 +1,35 @@
+name: Daily Shortage Email Report
+
+on:
+  schedule:
+    # Runs at 8:00 AM Madrid time (7:00 UTC in winter, 6:00 UTC in summer)
+    # Using 7:00 UTC as default (CET = UTC+1)
+    - cron: '0 7 * * *'
+  workflow_dispatch: # Allow manual trigger for testing
+
+jobs:
+  check-and-notify:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install script dependencies
+        run: |
+          cd scripts
+          npm init -y
+          npm install @supabase/supabase-js nodemailer
+
+      - name: Run shortage check and send emails
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: node scripts/check-shortages.js
