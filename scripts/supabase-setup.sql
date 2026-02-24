@@ -34,10 +34,10 @@ CREATE INDEX IF NOT EXISTS idx_snapshots_sub_date
 ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE snapshots ENABLE ROW LEVEL SECURITY;
 
--- Policies: Allow all operations for authenticated and anon users
--- (Since this is a single-user app, we keep it simple)
-CREATE POLICY "Allow all on subscriptions" ON subscriptions
-    FOR ALL USING (true) WITH CHECK (true);
-
-CREATE POLICY "Allow all on snapshots" ON snapshots
-    FOR ALL USING (true) WITH CHECK (true);
+-- SECURITY: No policies for anon users = anon key CANNOT read/write these tables
+-- Only the service_role key (used server-side in API routes and GitHub Actions) can access data.
+-- This means emails and catalog data are NEVER exposed to the browser.
+--
+-- If you previously ran the old setup with "Allow all" policies, run these to remove them:
+-- DROP POLICY IF EXISTS "Allow all on subscriptions" ON subscriptions;
+-- DROP POLICY IF EXISTS "Allow all on snapshots" ON snapshots;

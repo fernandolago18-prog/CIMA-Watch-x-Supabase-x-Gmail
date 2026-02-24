@@ -13,6 +13,10 @@
             "destination": "/api/save-config"
         },
         {
+            "source": "/api/load-config",
+            "destination": "/api/load-config"
+        },
+        {
             "source": "/(.*)",
             "destination": "/index.html"
         }

@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Mail, Plus, X, Save, CheckCircle, AlertCircle, Loader } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 
 const EmailConfig = ({ catalogCNs }) => {
     const [emails, setEmails] = useState(() => {
@@ -19,29 +18,24 @@ const EmailConfig = ({ catalogCNs }) => {
     const [status, setStatus] = useState(null); // { type: 'success'|'error', message: string }
     const [expanded, setExpanded] = useState(false);
 
-    // Load existing config from Supabase on mount
+    // Load existing config from server (never directly from Supabase)
     useEffect(() => {
-        if (!supabase) return;
         const loadConfig = async () => {
             try {
-                const { data } = await supabase
-                    .from('subscriptions')
-                    .select('emails, hospital_name')
-                    .limit(1)
-                    .single();
+                const res = await fetch('/api/load-config');
+                if (!res.ok) return;
+                const data = await res.json();
 
-                if (data) {
-                    if (data.emails && data.emails.length > 0) {
-                        setEmails(data.emails);
-                        localStorage.setItem('notificationEmails', JSON.stringify(data.emails));
-                    }
-                    if (data.hospital_name) {
-                        setHospitalName(data.hospital_name);
-                        localStorage.setItem('hospitalName', data.hospital_name);
-                    }
+                if (data.emails && data.emails.length > 0) {
+                    setEmails(data.emails);
+                    localStorage.setItem('notificationEmails', JSON.stringify(data.emails));
+                }
+                if (data.hospitalName) {
+                    setHospitalName(data.hospitalName);
+                    localStorage.setItem('hospitalName', data.hospitalName);
                 }
             } catch {
-                // No existing config, that's fine
+                // No existing config or offline, use localStorage fallback
             }
         };
         loadConfig();
@@ -127,9 +121,7 @@ const EmailConfig = ({ catalogCNs }) => {
         }
     };
 
-    if (!supabase) {
-        return null; // Don't render if Supabase isn't configured
-    }
+    // Component always renders — config is loaded/saved via server API routes
 
     return (
         <div className="email-config glass-panel">
