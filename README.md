@@ -68,11 +68,19 @@ Sube el código a un repositorio de GitHub (público o privado).
 ## 📧 Configuración de Alertas por Email (Opcional)
 
 Esta funcionalidad envía un correo diario a las 8:00 AM (hora Madrid) con 3 secciones:
-- 🆕 **Nuevos desabastecimientos** del día anterior
-- ⚠️ **Medicamentos que continúan** en desabastecimiento
-- ✅ **Medicamentos restablecidos**
+- 🆕 **Nuevos desabastecimientos** — tarjeta completa con CN, nombre, fechas, observaciones AEMPS y nivel de criticidad
+- ⚠️ **Medicamentos que continúan** en desabastecimiento — misma información detallada
+- ✅ **Medicamentos restablecidos** — solo nombre y código nacional
 
 Solo informa de los medicamentos que coinciden con el catálogo del hospital.
+
+### 🔒 Seguridad
+
+La arquitectura está diseñada para que **los datos sensibles nunca se expongan al navegador**:
+- Los emails y datos del catálogo se almacenan en Supabase y solo son accesibles mediante la `service_role key` (servidor).
+- La `anon key` (visible en el frontend) **no tiene permisos** para leer ni escribir las tablas.
+- Toda la comunicación con Supabase pasa por rutas API del servidor (Vercel serverless functions).
+- Las credenciales de Gmail solo existen en GitHub Secrets, nunca en el código.
 
 ### Requisitos (todos gratuitos)
 
@@ -89,10 +97,13 @@ Solo informa de los medicamentos que coinciden con el catálogo del hospital.
    - **Name**: `cima-watch`
    - **Region**: `West EU (Ireland)` (recomendado desde España)
 3. Ve a **SQL Editor** → **New query** → pega el contenido de [`scripts/supabase-setup.sql`](scripts/supabase-setup.sql) → **Run**.
-4. Ve a **Settings** → **API** y copia:
+4. Supabase mostrará un aviso de "Query has destructive operation" — es normal, **confirma la ejecución**.
+5. Ve a **Settings** → **API** y copia:
    - `Project URL`
    - `anon public key`
-   - `service_role key`
+   - `service_role key` (click en "Reveal" para verla)
+
+> ⚠️ La `service_role key` es secreta. No la compartas ni la pongas en el código frontend.
 
 ### Paso 2: Configurar Gmail
 
