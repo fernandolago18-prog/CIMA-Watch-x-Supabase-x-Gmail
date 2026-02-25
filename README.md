@@ -147,6 +147,14 @@ Tras añadir las variables, haz un **Redeploy** del proyecto.
 
 ---
 
+### Paso 6: Evitar que las acciones automaticas se deshabiliten automaticamente en GitHub Actions. 
+
+Para asegurar que tu sistema de reportes no se detenga y evitar que se "bloquee" el flujo de información por inactividad —algo vital para mantener una buena experiencia de usuario y la continuidad en la notificación por correo— debes permitir que keepalive se actúe.
+GitHub Actions necesita tener permisos para interactuar con tu repositorio. Verifica lo siguiente en la web de GitHub:
+Ve a Settings (Ajustes) de tu repositorio.
+En la barra lateral, entra en Actions > General.
+Baja hasta Workflow permissions y asegúrate de que esté seleccionado "Read and write permissions".
+
 ## 📁 Estructura del Proyecto
 
 ```
