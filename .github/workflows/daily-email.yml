@@ -33,3 +33,9 @@ jobs:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
         run: node scripts/check-shortages.js
+        
+      # --- SECCIÓN PARA KEEPALIVE ---
+      - name: Keepalive Workflow
+        uses: gautamkrishnar/keepalive-workflow@v1
+        with:
+          use_api: true # Actualiza la actividad vía API sin crear commits visibles
