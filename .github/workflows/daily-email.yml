@@ -2,8 +2,8 @@ name: Daily Shortage Email Report
 
 on:
   schedule:
-    # Runs at 5:00 AM Madrid time (7:00 UTC in winter, 6:00 UTC in summer)
-    # Using 4:00 UTC as default (CET = UTC+1)
+    # Runs at 6:00 AM Madrid time (7:00 UTC in winter, 6:00 UTC in summer)
+    # Using 5:00 UTC as default (CET = UTC+1)
     - cron: '0 5 * * *'
   workflow_dispatch: # Allow manual trigger for testing
 
